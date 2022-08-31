@@ -15,7 +15,7 @@ namespace PHPExtensionStubGenerator\ZendCode;
 
 class FunctionGenerator
 {
-    public static function generateByPrototypeArray(array $prototype)
+    public static function generateByPrototypeArray(array $prototype): string
     {
         $line = 'function' . ' ' . $prototype['name'] . '(';
         $args = [];

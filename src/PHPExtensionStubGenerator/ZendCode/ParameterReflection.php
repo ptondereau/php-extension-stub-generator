@@ -13,49 +13,32 @@ declare(strict_types=1);
 
 namespace PHPExtensionStubGenerator\ZendCode;
 
-use Zend\Code\Reflection\ParameterReflection as BaseParameterReflection;
+use Laminas\Code\Reflection\ParameterReflection as BaseParameterReflection;
+use ReflectionClass;
 
 class ParameterReflection extends BaseParameterReflection
 {
-    public function detectType()
+    public function detectType(): ?string
     {
-        if (method_exists($this, 'getType')
-            && ($type = $this->getType())
-            && $type->isBuiltin()
+        if (
+            method_exists($this, 'getType')
+            && null !== ($type = $this->getType())
         ) {
-            return (string) $type;
+            if ($type instanceof \ReflectionUnionType) {
+                return implode('|', $type->getTypes());
+            }
+
+            return $type->getName();
         }
 
-        // can be dropped when dropping PHP7 support:
-        if ($this->isArray()) {
-            return 'array';
+        if (null !== $type && $type->getName() === 'self') {
+            return $this->getDeclaringClass()->getName();
         }
 
-        // can be dropped when dropping PHP7 support:
-        if ($this->isCallable()) {
-            return 'callable';
-        }
-
-        if (($class = $this->getClass()) instanceof \ReflectionClass) {
+        if (($class = $this->getClass()) instanceof ReflectionClass) {
             return $class->getName();
         }
 
         return null;
-
-        // currenty, ignore docblock..
-
-//        $docBlock = $this->getDeclaringFunction()->getDocBlock();
-//
-//        if (! $docBlock instanceof DocBlockReflection) {
-//            return null;
-//        }
-//
-//        $params = $docBlock->getTags('param');
-//
-//        if (isset($params[$this->getPosition()])) {
-//            return $params[$this->getPosition()]->getType();
-//        }
-//
-//        return null;
     }
 }

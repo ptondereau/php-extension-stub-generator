@@ -4,26 +4,24 @@ declare(strict_types=1);
 namespace PHPExtensionStubGenerator;
 
 use Generator;
+use Laminas\Code\Generator\ClassGenerator;
+use Laminas\Code\Generator\DocBlockGenerator;
+use Laminas\Code\Reflection\ClassReflection;
 use ReflectionExtension;
-use Zend\Code\Generator\ {
-    ClassGenerator, DocBlockGenerator
-};
-use Zend\Code\Reflection\ClassReflection;
 use PHPExtensionStubGenerator\ZendCode\ {
     FunctionGenerator, FunctionReflection
 };
 
 class GeneratorDumper
 {
-    private $reflectionExtension;
-    private $docBlockGenerator;
+    private DocBlockGenerator $docBlockGenerator;
 
-    public function __construct(ReflectionExtension $reflectionExtension)
+    public function __construct(private ReflectionExtension $reflectionExtension)
     {
-        $this->reflectionExtension = $reflectionExtension;
+        $this->docBlockGenerator = new DocBlockGenerator('auto generated file by PHPExtensionStubGenerator');
     }
 
-    public function getGenerates() : Generator
+    public function getGenerates(): Generator
     {
         yield from $this->generateConstants();
         yield from $this->generateFunctions();
@@ -33,16 +31,6 @@ class GeneratorDumper
     public function setDocBlockGenerator(DocBlockGenerator $docBlockGenerator) : void
     {
         $this->docBlockGenerator = $docBlockGenerator;
-    }
-
-    public function getDocBlockGenerator() : DocBlockGenerator
-    {
-        if (!$this->docBlockGenerator instanceof DocBlockGenerator) {
-            $docBlockGenerator = new DocBlockGenerator('auto generated file by PHPExtensionStubGenerator');
-            $this->docBlockGenerator = $docBlockGenerator;
-        }
-
-        return $this->docBlockGenerator;
     }
 
     public function generateConstants() : Generator
@@ -72,10 +60,10 @@ class GeneratorDumper
             }
         }
 
-        return "";
+        return '';
     }
 
-    public function generateClasses() : Generator
+    public function generateClasses(): Generator
     {
         /** @var \ReflectionClass $phpClassReflection */
         foreach ($this->reflectionExtension->getClasses() as $fqcn => $phpClassReflection) {
@@ -84,10 +72,10 @@ class GeneratorDumper
             yield $classGenerator->generate();
         }
 
-        return "";
+        return '';
     }
 
-    public function generateFunctions() : Generator
+    public function generateFunctions(): Generator
     {
         $declaredNamespaces = [];
         foreach ($this->reflectionExtension->getFunctions() as $function_name => $phpFunctionReflection) {
@@ -103,6 +91,6 @@ class GeneratorDumper
             yield FunctionGenerator::generateByPrototypeArray($functionReflection->getPrototype());
         }
 
-        return "";
+        return '';
     }
 }

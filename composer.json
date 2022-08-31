@@ -4,13 +4,12 @@
     "license" : "BSD-3-Clause",
     "keywords": ["extension", "stub", "ReflectionExtension"],
     "require": {
-        "zendframework/zend-code": "^3",
-        "docopt/docopt": "^1.0",
-        "zendframework/zend-console": "^2.6"
+        "php": "^8.0",
+        "laminas/laminas-code": "^4",
+        "symfony/console": "6.0.*"
     },
     "require-dev": {
-        "ext-phar": "*",
-        "phpunit/phpunit": "^5.6.4"
+        "ext-phar": "*"
     },
     "bin" : [
         "php-extension-stub-generator"
@@ -20,9 +19,9 @@
             "PHPExtensionStubGenerator\\": "src/PHPExtensionStubGenerator"
         }
     },
-    "autoload-dev": {
-        "psr-4": {
-            "PHPExtensionStubGeneratorTest\\": "tests/PHPExtensionStubGeneratorTest"
+    "config": {
+        "allow-plugins": {
+            "bamarni/composer-bin-plugin": true
         }
     }
 }
